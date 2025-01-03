@@ -37,20 +37,23 @@ async function updateGasStationData(stationId) {
       };
 
       await GasStation.findOneAndUpdate(
-        { stationId: gasStationData.stationId },
         {
-          $set: gasStationData,
-          $addToSet: {
-            "products.$[elem].prices": gasStationData.products[0].prices[0],
-          },
+          stationId: gasStationData.stationId,
+          "products.productId": gasStationData.products[0].productId,
         },
         {
-          upsert: true,
-          new: true,
-          arrayFilters: [
-            { "elem.productId": gasStationData.products[0].productId },
-          ],
-        }
+          $set: {
+            "products.$.prices": gasStationData.products[0].prices,
+            stationName: gasStationData.stationName,
+            address: gasStationData.address,
+            town: gasStationData.town,
+            province: gasStationData.province,
+            flag: gasStationData.flag,
+            flagId: gasStationData.flagId,
+            geometry: gasStationData.geometry,
+          },
+        },
+        { upsert: true, new: true }
       );
     }
 
@@ -60,4 +63,33 @@ async function updateGasStationData(stationId) {
   }
 }
 
-export { updateGasStationData };
+async function addPriceToGasStation(stationId, productId, price, date) {
+  try {
+    await GasStation.findOneAndUpdate(
+      {
+        stationId,
+        "products.productId": productId,
+      },
+      {
+        $push: {
+          "products.$.prices": {
+            price,
+            date,
+          },
+        },
+      }
+    );
+  } catch (error) {
+    console.error(`Error adding price to gas station ID: ${stationId}`, error);
+  }
+}
+
+async function updateAllGasStationData() {
+  const stationIds = [108, 109, 110]; // Replace with your desired station IDs
+
+  for (const stationId of stationIds) {
+    await updateGasStationData(stationId);
+  }
+}
+
+export { updateGasStationData, addPriceToGasStation, updateAllGasStationData };

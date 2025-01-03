@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
+import config from "./config.js";
+
+const { DB_USER, DB_PASS, DB_NAME } = config;
+
+const databaseURI = `mongodb+srv://${DB_USER}:${DB_PASS}@codercluster.tgft5r9.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
+
+mongoose.set("strictQuery", false);
 
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(databaseURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

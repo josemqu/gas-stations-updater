@@ -35,6 +35,6 @@ const gasStationSchema = new mongoose.Schema({
   ],
 });
 
-const GasStation = mongoose.model(gasStationCollection, gasStationSchema);
+const gasStationModel = mongoose.model(gasStationCollection, gasStationSchema);
 
-export default GasStation;
+export default gasStationModel;

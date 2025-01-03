@@ -1,23 +1,20 @@
-import cron from "node-cron";
+import express from "express";
 import dotenv from "dotenv";
-import connectToDatabase from "./config/database.js";
-import { updateGasStationData } from "./services/gasStationService.js";
+import connectToDatabase from "./src/config/database.js";
+import { updateGasStations } from "./src/controllers/gasStationController.js";
 
 dotenv.config();
 
-// Function to fetch data for all station IDs
-async function updateAllGasStationData() {
-  const stationIds = [108, 109, 110]; // Replace with your desired station IDs
+const app = express();
 
-  for (const stationId of stationIds) {
-    await updateGasStationData(stationId);
-  }
-}
+// Define the route for updating gas stations
+app.post("/update-gas-stations", updateGasStations);
 
 // Connect to the database and start the app
 connectToDatabase().then(() => {
-  // Schedule the data update to run once a day
-  cron.schedule("0 0 * * *", () => {
-    updateAllGasStationData();
+  // Start the Express server
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
 });
