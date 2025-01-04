@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectToDatabase from "./src/config/database.js";
-import routerAPI from "./src/routes/routes.js";
+import connectToDatabase from "./config/database.js";
+import routerAPI from "./routes/routes.js";
 import morgan from "morgan";
-import cors from "./src/middlewares/cors.js";
+import cors from "./middlewares/cors.js";
 
 dotenv.config();
 
