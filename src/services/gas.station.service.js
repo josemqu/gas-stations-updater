@@ -42,6 +42,10 @@ class GasStationService {
     const gasStations = await this.getGasStations();
     return gasStations;
   }
+
+  addPriceToGasStation(gasStationId, price) {
+    return gasStationRepository.addPrice(gasStationId, price);
+  }
 }
 
 export default GasStationService;

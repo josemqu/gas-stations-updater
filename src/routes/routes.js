@@ -1,11 +1,12 @@
 import { Router } from "express";
-import gasTenderRouter from "./gas.station.router.js";
+import gasStationRouter from "./gas.station.router.js";
+import priceRouter from "./price.router.js";
 
 const routerAPI = (app) => {
   const router = Router();
   app.use("/api/v1", router);
-  app.use("/", viewsRouter);
-  router.use("/gas-stations", gasTenderRouter);
+  router.use("/gas-stations", gasStationRouter);
+  router.use("/prices", priceRouter);
 };
 
 export default routerAPI;

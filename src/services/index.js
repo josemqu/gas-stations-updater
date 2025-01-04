@@ -1,3 +1,5 @@
-import GasTenderService from "./gas.station.service.js";
+import GasStationService from "./gas.station.service.js";
+import PriceService from "./price.service.js";
 
-export const gasTenderService = new GasTenderService();
+export const gasStationService = new GasStationService();
+export const priceService = new PriceService();
