@@ -16,3 +16,20 @@ export async function getPrices(req, res) {
     });
   }
 }
+
+export async function convertPrices(req, res) {
+  try {
+    const result = await priceService.convertPrices();
+    return res.status(200).json({
+      ok: true,
+      result: "Prices converted successfully",
+      payload: result,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      ok: false,
+      result: "Prices not converted",
+      message: error.message,
+    });
+  }
+}

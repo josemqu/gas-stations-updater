@@ -1,48 +1,64 @@
+import mongoose from "mongoose";
+
 /**
  * Transforma los datos obtenidos de la API al formato esperado por MongoDB.
  * @param {Array} apiData - Datos obtenidos de la API.
- * @returns {Array} - Datos transformados para insertar en MongoDB.
+ * @returns {Array} - Datos transformados listos para ser insertados o actualizados en MongoDB.
  */
 export const mapApiToMongoModel = (apiData) => {
-  const estacionesMap = {};
+  const stationsMap = {};
 
   apiData.forEach((item) => {
-    if (!estacionesMap[item.idempresa]) {
-      estacionesMap[item.idempresa] = {
-        _id: item.idempresa,
-        empresa: item.empresa,
-        empresabandera: item.empresabandera,
-        idempresabandera: item.idempresabandera,
-        direccion: item.direccion,
-        localidad: item.localidad,
-        ubicacion: {
-          latitud: item.latitud,
-          longitud: item.longitud,
+    // Si la estación no existe en el mapa, inicializamos su estructura
+    if (!stationsMap[item.idempresa]) {
+      stationsMap[item.idempresa] = {
+        stationId: item.idempresa,
+        stationName: item.empresa,
+        address: item.direccion,
+        town: item.localidad,
+        province: item.provincia || "N/A", // Provincia no siempre está disponible
+        flag: item.empresabandera,
+        flagId: item.idempresabandera,
+        geometry: {
+          type: "Point",
+          coordinates: [parseFloat(item.longitud), parseFloat(item.latitud)],
         },
-        precios: [],
+        products: [],
       };
     }
 
-    const estacion = estacionesMap[item.idempresa];
-    const producto = estacion.precios.find(
-      (p) => p.idproducto === item.idproducto
+    // Referencia a la estación actual
+    const station = stationsMap[item.idempresa];
+
+    // Verificamos si el producto ya existe en la estación
+    const existingProduct = station.products.find(
+      (p) => p.productId === item.idproducto
     );
 
-    if (!producto) {
-      estacion.precios.push({
-        producto: item.producto,
-        idproducto: item.idproducto,
-        historial: [
-          { precio: item.precio, fecha_vigencia: item.fecha_vigencia },
+    if (!existingProduct) {
+      // Si el producto no existe, lo añadimos
+      station.products.push({
+        _id: new mongoose.Types.ObjectId(),
+        productId: item.idproducto,
+        productName: item.producto,
+        prices: [
+          {
+            _id: new mongoose.Types.ObjectId(),
+            price: parseFloat(item.precio),
+            date: new Date(item.fecha_vigencia),
+          },
         ],
       });
     } else {
-      producto.historial.push({
-        precio: item.precio,
-        fecha_vigencia: item.fecha_vigencia,
+      // Si el producto ya existe, añadimos el nuevo precio al historial
+      existingProduct.prices.push({
+        _id: new mongoose.Types.ObjectId(),
+        price: parseFloat(item.precio),
+        date: new Date(item.fecha_vigencia),
       });
     }
   });
 
-  return Object.values(estacionesMap);
+  // Convertimos el objeto stationsMap a un arreglo
+  return Object.values(stationsMap);
 };
