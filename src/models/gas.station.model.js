@@ -5,15 +5,15 @@ const gasStationCollection = "stations2";
 
 // Schema for Price History
 const priceSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, auto: true },
+  // _id: { type: Schema.Types.ObjectId, auto: true },
   price: { type: Number, required: true },
-  date: { type: Date, required: true },
+  date: { type: Date, required: true, unique: true },
 });
 
 // Schema for Products
 const productSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, auto: true },
-  productId: { type: Number, required: true },
+  // _id: { type: Schema.Types.ObjectId, auto: true },
+  productId: { type: Number, required: true, unique: true },
   productName: { type: String, required: true },
   prices: [priceSchema], // Array of price histories
 });
@@ -21,6 +21,7 @@ const productSchema = new Schema({
 // Schema for Station
 const gasStationSchema = new Schema(
   {
+    _id: { type: Schema.Types.ObjectId, auto: true },
     stationId: { type: Number, required: true, unique: true },
     stationName: { type: String, required: true },
     address: { type: String, required: true },

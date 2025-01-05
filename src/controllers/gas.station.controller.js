@@ -1,4 +1,5 @@
 import { gasStationService } from "../services/index.js";
+import { priceService } from "../services/index.js";
 
 export async function getGasStations(req, res) {
   try {
@@ -34,12 +35,11 @@ export async function createGasStation(req, res) {
   }
 }
 
-export async function updateGasStation(req, res) {
+export async function updateGasStations(req, res) {
   try {
-    const gasStation = await gasStationService.updateGasStation(
-      req.params.id,
-      req.body
-    );
+    const stations = await priceService.convertPrices();
+    const gasStation = await gasStationService.updateGasStations(stations);
+
     return res.status(200).json({
       ok: true,
       result: "Gas Station updated successfully",
