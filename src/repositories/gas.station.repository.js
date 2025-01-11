@@ -1,5 +1,7 @@
+import axios from "axios";
 import { gasStationModel } from "../models/gas.station.model.js";
 import mongoose from "mongoose";
+import config from "../config/config.js";
 
 export default class GasStationRepository {
   async getAll() {
@@ -12,6 +14,15 @@ export default class GasStationRepository {
       .collation({ locale: "en_US", numericOrdering: true })
       .limit(15)
       .lean();
+  }
+
+  async getAllLocalStations() {
+    const stations = await axios
+      .get("http://127.0.0.1:3000/stations.json")
+      .then((response) => response.data)
+      .catch((error) => console.error(error));
+    console.log(stations.length);
+    return stations;
   }
 
   async getById(id) {

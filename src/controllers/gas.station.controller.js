@@ -18,6 +18,23 @@ export async function getGasStations(req, res) {
   }
 }
 
+export async function getGasStation(req, res) {
+  try {
+    const gasStation = await gasStationService.getGasStation(req.params.id);
+    return res.status(200).json({
+      ok: true,
+      result: "Gas Station found successfully",
+      payload: gasStation,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      ok: false,
+      result: "Gas Station not found",
+      message: error.message,
+    });
+  }
+}
+
 export async function createGasStation(req, res) {
   try {
     const gasStation = await gasStationService.createGasStation(req.body);
@@ -30,6 +47,23 @@ export async function createGasStation(req, res) {
     return res.status(500).send({
       ok: false,
       result: "Gas Station not created",
+      message: error.message,
+    });
+  }
+}
+
+export async function createGasStations(req, res) {
+  try {
+    const stations = await gasStationService.createStations();
+    return res.status(201).send({
+      ok: true,
+      result: "Gas Stations created successfully",
+      payload: stations,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      ok: false,
+      result: "Gas Stations not created",
       message: error.message,
     });
   }

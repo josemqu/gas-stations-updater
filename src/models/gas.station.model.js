@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
-const gasStationCollection = "stations2";
+const gasStationCollection = "stations3";
 
 // Schema for Price History
 const priceSchema = new Schema({
   // _id: { type: Schema.Types.ObjectId, auto: true },
   price: { type: Number, required: true },
-  date: { type: Date, required: true, unique: true },
+  date: { type: Date, required: true },
 });
 
 // Schema for Products
 const productSchema = new Schema({
   // _id: { type: Schema.Types.ObjectId, auto: true },
-  productId: { type: Number, required: true, unique: true },
+  productId: { type: Number, required: true },
   productName: { type: String, required: true },
   prices: [priceSchema], // Array of price histories
 });

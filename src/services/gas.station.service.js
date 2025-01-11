@@ -1,6 +1,4 @@
 import { gasStationRepository } from "../repositories/index.js";
-import axios from "axios";
-import config from "../config/config.js";
 
 class GasStationService {
   constructor() {}
@@ -15,9 +13,25 @@ class GasStationService {
     return gasStation;
   }
 
-  async updateGasStations(stations) {
-    const gasStations = await gasStationRepository.update(stations);
-    return gasStations;
+  async createGasStation(gasStation) {
+    const newGasStation = await gasStationRepository.create(gasStation);
+    return newGasStation;
+  }
+
+  async createStations() {
+    console.log("Creating local stations");
+    const localStations = await gasStationRepository.getAllLocalStations();
+    console.log("Local stations retrieved");
+
+    // Use Promise.all to create all stations at the same time
+    const stationsPromises = localStations.map((station) => {
+      const createdStation = this.createGasStation(station);
+      const { stationId } = createdStation;
+      return createdStation;
+    });
+    const stations = await Promise.all(stationsPromises);
+    // return stations id
+    return stations.map((station) => station.stationId);
   }
 
   async deleteGasStation(id) {

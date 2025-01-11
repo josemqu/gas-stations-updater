@@ -4,6 +4,11 @@ import connectToDatabase from "./config/database.js";
 import routerAPI from "./routes/routes.js";
 import morgan from "morgan";
 import cors from "./middlewares/cors.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -16,6 +21,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(cors);
 app.use(morgan("dev"));
+app.use("/", express.static(`${__dirname}/public`));
 
 // Routes config
 routerAPI(app);
